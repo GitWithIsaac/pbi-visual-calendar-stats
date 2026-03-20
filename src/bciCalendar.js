@@ -286,9 +286,7 @@
         }
 
         // Render legend
-        if (settings.legend && settings.legend.show !== false) {
-            var legendPos = settings.legend.position || 'right';
-
+        if (settings.legend && settings.legend.show !== false && viewModel.dataPoints && viewModel.dataPoints.length > 0) {
             // If top, legendEl was already created before the table (Task 8).
             // For bottom and right, create it now.
             if (legendPos !== 'top') {
