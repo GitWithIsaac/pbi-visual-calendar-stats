@@ -36,15 +36,27 @@
             selectionManager: selectionManager,
             allowInteractions: allowInteractions,
             minValue: settings.calendarColors.minValue || d3.min(viewModel.dataPoints.map(function(d) {
-                return d.value;
+                return d.measures[0] ? d.measures[0].value : NaN;
             })),
             centerValue: settings.calendarColors.centerValue || d3.mean(viewModel.dataPoints.map(function(d) {
-                return d.value;
+                return d.measures[0] ? d.measures[0].value : NaN;
             })),
             maxValue: settings.calendarColors.maxValue || d3.max(viewModel.dataPoints.map(function(d) {
-                return d.value;
+                return d.measures[0] ? d.measures[0].value : NaN;
             }))
         };
+
+        var measureColorKeys = ['color1', 'color2', 'color3', 'color4', 'color5'];
+        self.measureColors = measureColorKeys.map(function(key) {
+            return (settings.measureColors && settings.measureColors[key] && settings.measureColors[key].solid)
+                ? settings.measureColors[key].solid.color
+                : null;
+        });
+        // default palette for any missing color slots
+        var defaultColors = ['#2563eb', '#16a34a', '#dc2626', '#9333ea', '#ea580c'];
+        self.measureColors = self.measureColors.map(function(c, i) {
+            return c || defaultColors[i];
+        });
 
         var className = 'bci-calendar';
 
@@ -234,35 +246,42 @@
                 });
         }
 
-        var height;
-
-        // add data points to calendar
+        // Render pills for each data point
         for (var i = 0; i < viewModel.dataPoints.length; i++) {
             var dataPoint = viewModel.dataPoints[i];
-            var dataValue = dataPoint.value;
-            var dataLabel = dataPoint.valueText;
             var date = new Date(dataPoint.category);
             var year = date.getFullYear();
             var month = date.getMonth();
             var day = date.getDate();
             var id = className + '-' + year.toString() + month.toString() + day.toString();
-            var td = d3.select('#' + id)
-            td.style('background-color', getColor(dataValue));
+            var td = d3.select('#' + id);
 
-            height = height || td.node().getBoundingClientRect().height;
+            // Background color from primary stat (if enabled)
+            var bgColor = '';
+            var bgEnabled = settings.backgroundStat && settings.backgroundStat.enabled;
+            var bgIndex = settings.backgroundStat ? (settings.backgroundStat.measureIndex - 1) : -1;
+            if (bgEnabled && bgIndex >= 0 && dataPoint.measures[bgIndex]) {
+                bgColor = getColor(dataPoint.measures[bgIndex].value);
+            }
+            if (bgColor) td.style('background-color', bgColor);
 
-            if (settings.dataLabels.show && !isNaN(dataValue)) {
-                d3.select('#' + id + ' .' + className + '-parent')
-                    .append('div')
-                    .attr('class', className + '-dataLabel')
-                    .style({
-                        'color': settings.dataLabels.fontColor.solid.color,
-                        'font-size': settings.dataLabels.textSize + 'px',
-                        'font-weight': settings.dataLabels.fontWeight,
-                        'text-align': settings.dataLabels.alignment,
-                        'height': parseInt(settings.dataLabels.textSize) + (parseInt(settings.dataLabels.textSize) * .5) + '%'
-                    })
-                    .text(dataLabel);
+            // Render one pill per measure
+            if (settings.dataLabels.show) {
+                var parent = d3.select('#' + id + ' .' + className + '-parent');
+                dataPoint.measures.forEach(function(measure, idx) {
+                    if (isNaN(measure.value)) return;
+                    var fg = pillForeground(self.measureColors[idx]);
+                    var bg = pillBackground(self.measureColors[idx]);
+                    parent.append('div')
+                        .attr('class', className + '-pill')
+                        .style({
+                            'background-color': bg,
+                            'color': fg,
+                            'font-size': settings.dataLabels.textSize + 'px',
+                            'font-weight': settings.dataLabels.fontWeight
+                        })
+                        .text(measure.valueText);
+                });
             }
         }
 
