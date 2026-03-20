@@ -264,7 +264,6 @@ module powerbi.extensibility.visual {
 
         let categorical = dataViews[0].categorical;
         let category = categorical.categories[0];
-        let dataValue = categorical.values[0];
         let objects = dataViews[0].metadata.objects;
         let colorPalette: IColorPalette = host.colorPalette;
         let calendarDataPoints: CalendarDataPoint[] = [];
@@ -342,46 +341,48 @@ module powerbi.extensibility.visual {
             }
         }
 
-        let valueFormat = valueFormatter.create({
-            value: calendarSettings.dataLabels.unit,
-            precision: calendarSettings.dataLabels.precision
-        });
+        for (let i = 0, len = category.values.length; i < len; i++) {
+            if (!category.values[i]) continue;
 
-        for (let i = 0, len = Math.max(category.values.length, dataValue.values.length); i < len; i++) {
-            let textFormat = valueFormatter.create({
-                value: valueFormat.options.value,
-                precision: valueFormat.options.precision,
-                format: valueFormatter.getFormatStringByColumn(dataValue.source)
-            });
-            let selectionIdBuilder = host.createSelectionIdBuilder()
-                .withCategory(category, i);
+            let selectionIdBuilder = host.createSelectionIdBuilder().withCategory(category, i);
             let selectionId = selectionIdBuilder.createSelectionId();
-            let highlight: any = dataValue.highlights && dataValue.highlights[i] !== null;
+            let highlight: any = categorical.values[0].highlights && categorical.values[0].highlights[i] !== null;
 
-            // if condition accounts for possible null dates
-            if (category.values[i]) {
-                calendarDataPoints.push({
-                    category: <string>category.values[i],
-                    measures: [],
-                    value: parseFloat(valueFormat.format(dataValue.values[i])),
-                    valueText: textFormat.format(dataValue.values[i]),
-                    rowdata: tabledata[i],
-                    selected: false,
-                    identity: selectionId,
-                    key: (selectionIdBuilder.createSelectionId() as ISelectionId).getKey(),
-                    highlight: highlight,
-                    selectionId: host.createSelectionIdBuilder()
-                        .withCategory(category, i)
-                        .createSelectionId()
+            let measures: MeasureValue[] = categorical.values.map((col) => {
+                let textFormat = valueFormatter.create({
+                    value: calendarSettings.dataLabels.unit,
+                    precision: calendarSettings.dataLabels.precision,
+                    format: valueFormatter.getFormatStringByColumn(col.source)
                 });
-            }
+                return {
+                    value: col.values[i] !== null ? parseFloat(String(col.values[i])) : NaN,
+                    valueText: textFormat.format(col.values[i]),
+                    displayName: col.source.displayName
+                };
+            });
+
+            // Note: selectionId is constructed three times here (selectionId, key, and the
+            // inline one in the push). This mirrors the original codebase pattern exactly —
+            // do not consolidate unless you are refactoring the whole selection system.
+            calendarDataPoints.push({
+                category: <string>category.values[i],
+                measures: measures,
+                rowdata: tabledata[i],
+                selected: false,
+                identity: selectionId,
+                key: (selectionIdBuilder.createSelectionId() as ISelectionId).getKey(),
+                highlight: highlight,
+                selectionId: host.createSelectionIdBuilder()
+                    .withCategory(category, i)
+                    .createSelectionId()
+            });
         }
 
         viewModel.dataPoints = calendarDataPoints;
         viewModel.month = month;
         viewModel.year = year;
         viewModel.settings = calendarSettings;
-        viewModel.hasHighlights = !!(dataValue.highlights);
+        viewModel.hasHighlights = !!(categorical.values[0] && categorical.values[0].highlights);
 
         return viewModel;
     }
