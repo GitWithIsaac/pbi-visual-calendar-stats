@@ -392,7 +392,7 @@ module powerbi.extensibility.visual {
         private host: IVisualHost;
         private locale: string;
         private calendar: any;
-        private table: d3.Selection<HTMLTableElement>; //<SVGElement>;
+        private table: d3.Selection<HTMLElement>;
         private calendarSettings: CalendarSettings;
         private selectionManager: ISelectionManager;
         private selectionIdBuilder: ISelectionIdBuilder;
@@ -422,8 +422,7 @@ module powerbi.extensibility.visual {
                 this.syncSelectionState(this.calendarSelection, this.selectionManager.getSelectionIds() as ISelectionId[]);
             });
             
-            let table = this.table = d3.select(options.element)
-                .append('table').classed(this.className, true);
+            this.table = d3.select(options.element);
 
             this.tooltipServiceWrapper = createTooltipServiceWrapper(
                 this.host.tooltipService,
@@ -446,16 +445,6 @@ module powerbi.extensibility.visual {
             };
             let width = options.viewport.width - (margins.right + margins.left);
             let height = options.viewport.height - (margins.top + margins.bottom);
-
-            this.table
-                .attr({
-                    width: width,
-                    height: height
-                })
-                .style({
-                    'margin-left': margins.left + 'px',
-                    'margin-top': margins.top + 'px'
-                });
 
             this.table.selectAll('*').remove();
             this.calendar = bciCalendar.loadCalendar(this.table, viewModel, this.calendarSettings, this.selectionManager, this.host.allowInteractions);
@@ -693,7 +682,7 @@ module powerbi.extensibility.visual {
     }
 
     export interface CalendarBehaviorOptions {
-        container: d3.Selection<HTMLTableElement>;
+        container: d3.Selection<HTMLElement>;
         dayCells: d3.Selection<any>;
         interactivityService: IInteractivityService;
         hasHighlights: boolean;

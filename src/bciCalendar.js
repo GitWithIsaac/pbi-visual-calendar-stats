@@ -46,8 +46,25 @@
             }))
         };
 
-        var calendar = element;
-        var className = calendar.attr("class");
+        var className = 'bci-calendar';
+
+        var container = element.append('div')
+            .attr('class', 'bci-calendar-container');
+
+        // Apply legend position class for CSS flex layout
+        var legendPos = (settings.legend && settings.legend.position) || 'right';
+        if (settings.legend && settings.legend.show !== false) {
+            container.classed('legend-' + legendPos, true);
+        }
+
+        // If legend is top, create its element before the table
+        var legendEl = null;
+        if (settings.legend && settings.legend.show !== false && legendPos === 'top') {
+            legendEl = container.append('div').attr('class', 'bci-calendar-legend');
+        }
+
+        var table = container.append('table').classed(className, true);
+        var calendar = table;
         var colspan = (settings.weekNumbers && settings.weekNumbers.show) ? 8 : 7;
 
         if (viewModel.error.hasError) {
