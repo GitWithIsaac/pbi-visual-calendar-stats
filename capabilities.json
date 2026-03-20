@@ -380,11 +380,11 @@
         "measureColors": {
             "displayName": "Measure Colors",
             "properties": {
-                "color1": { "displayName": "Measure 1 Color", "type": { "fill": { "solid": { "color": true } } } },
-                "color2": { "displayName": "Measure 2 Color", "type": { "fill": { "solid": { "color": true } } } },
-                "color3": { "displayName": "Measure 3 Color", "type": { "fill": { "solid": { "color": true } } } },
-                "color4": { "displayName": "Measure 4 Color", "type": { "fill": { "solid": { "color": true } } } },
-                "color5": { "displayName": "Measure 5 Color", "type": { "fill": { "solid": { "color": true } } } }
+                "color1": { "displayName": "Measure 1 Color", "type": { "fill": { "solid": { "color": { "nullable": true } } } } },
+                "color2": { "displayName": "Measure 2 Color", "type": { "fill": { "solid": { "color": { "nullable": true } } } } },
+                "color3": { "displayName": "Measure 3 Color", "type": { "fill": { "solid": { "color": { "nullable": true } } } } },
+                "color4": { "displayName": "Measure 4 Color", "type": { "fill": { "solid": { "color": { "nullable": true } } } } },
+                "color5": { "displayName": "Measure 5 Color", "type": { "fill": { "solid": { "color": { "nullable": true } } } } }
             }
         },
         "legend": {
@@ -447,8 +447,8 @@
                 "values": {
                     "select": [
                         {
-                            "bind": {
-                                "to": "measure"
+                            "for": {
+                                "in": "measure"
                             }
                         },
                         {
