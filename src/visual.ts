@@ -246,12 +246,6 @@ module powerbi.extensibility.visual {
             error: <CalendarError>{ hasError: false }
         };
 
-        if (dataViews[0].categorical && !dataViews[0].categorical.categories[0].source.type.dateTime) {
-            viewModel.error.hasError = true;
-            viewModel.error.errorMessage = 'Invalid \'Date Field\' column used. Please select a valid Date field.';
-            return viewModel;
-        }
-        
         if (!dataViews
             || !dataViews[0]
             || !dataViews[0].categorical
@@ -259,6 +253,12 @@ module powerbi.extensibility.visual {
             || !dataViews[0].categorical.categories[0].source
             || !dataViews[0].categorical.values
             || dataViews[0].categorical.categories[0].values.length == 0) {
+            return viewModel;
+        }
+
+        if (!dataViews[0].categorical.categories[0].source.type.dateTime) {
+            viewModel.error.hasError = true;
+            viewModel.error.errorMessage = 'Invalid \'Date Field\' column used. Please select a valid Date field.';
             return viewModel;
         }
 
@@ -348,7 +348,7 @@ module powerbi.extensibility.visual {
             let selectionId = selectionIdBuilder.createSelectionId();
             let highlight: any = categorical.values[0].highlights && categorical.values[0].highlights[i] !== null;
 
-            let measures: MeasureValue[] = categorical.values.map((col) => {
+            let measures: MeasureValue[] = categorical.values.filter(col => col.source.roles['measure']).map((col) => {
                 let textFormat = valueFormatter.create({
                     value: calendarSettings.dataLabels.unit,
                     precision: calendarSettings.dataLabels.precision,
