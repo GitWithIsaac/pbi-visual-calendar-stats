@@ -24,3 +24,15 @@ test('pillForeground returns the original color unchanged', () => {
 test('pillForeground falls back to #333 on invalid color', () => {
     expect(pillForeground(null)).toBe('#333');
 });
+
+test('pillForeground falls back to #333 on invalid non-null string', () => {
+    expect(pillForeground('notacolor')).toBe('#333');
+});
+
+test('hexToRgb returns null for 3-digit shorthand hex', () => {
+    expect(hexToRgb('#f00')).toBeNull();
+});
+
+test('hexToRgb parses hex without leading hash', () => {
+    expect(hexToRgb('2563eb')).toEqual({ r: 37, g: 99, b: 235 });
+});
