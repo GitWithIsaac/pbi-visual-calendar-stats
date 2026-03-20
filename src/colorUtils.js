@@ -20,5 +20,5 @@ function pillForeground(hex) {
 }
 
 if (typeof module !== 'undefined') {
-    module.exports = { hexToRgb, pillBackground, pillForeground };
+    module.exports = { hexToRgb: hexToRgb, pillBackground: pillBackground, pillForeground: pillForeground };
 }

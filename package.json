@@ -27,6 +27,7 @@
   "homepage": "https://github.com/mannymerino/bci-calendar#readme",
   "devDependencies": {
     "@types/d3": "^3.5.38",
+    "@types/node": "18.8.5",
     "jest": "^30.3.0",
     "powerbi-visuals-utils-dataviewutils": "1.0.1",
     "powerbi-visuals-utils-tooltiputils": "^1.0.0"

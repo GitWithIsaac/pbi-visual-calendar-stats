@@ -24,7 +24,7 @@ module powerbi.extensibility.visual {
     }
     
     class TooltipServiceWrapper implements ITooltipServiceWrapper {
-        private handleTouchTimeoutId: number;
+        private handleTouchTimeoutId: any;
         private visualHostTooltipService: ITooltipService;
         private rootElement: Element;
         private handleTouchDelay: number;
