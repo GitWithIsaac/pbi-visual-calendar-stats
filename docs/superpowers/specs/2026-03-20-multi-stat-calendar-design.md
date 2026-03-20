@@ -60,7 +60,7 @@ The existing gradient/fixed cell background coloring is preserved but made optio
 
 ### `capabilities.json`
 
-- Remove `"max": 1` from the `measure` condition in `dataViewMappings`. This allows the user to drag multiple fields into the "Measure Data" bucket.
+- Replace `"max": 1` with `"max": 5` on the `measure` condition in `dataViewMappings`. This allows up to 5 measure fields in the "Measure Data" bucket. The cap of 5 is enforced by PBI so a 6th field cannot be added; it matches the 5 color slots in `measureColors`.
 - `category` (Date Field) and `tooltipmeasure` roles are unchanged.
 - Keep `"supportsHighlight": true`.
 
@@ -103,9 +103,11 @@ Loop over all columns in `categorical.values` (instead of just `[0]`) to build t
 | `backgroundStat` | `enabled` | Toggle | Off |
 | `backgroundStat` | `measureIndex` | Enum: None / Measure 1–5 | None |
 
+When `backgroundStat.enabled` is `true` but `measureIndex` is `None`, the visual behaves as if `enabled` is `false` — no background color is applied. No error or warning is shown.
+
 ### Existing settings preserved
 
-All existing `calendar`, `calendarColors`, `dataLabels`, `showWeeks` format sections are kept. `dataLabels` text size/weight/color applies globally to all measure pills (not per-measure) in Phase 1. `calendarColors` gradient/fixed settings activate only when `backgroundStat.enabled` is on.
+All existing `calendar`, `calendarColors`, `dataLabels`, `showWeeks` format sections are kept. `dataLabels` text size/weight apply globally to all measure pills. `dataLabels.fontColor` is **ignored for pills** — pill text color is always derived from `measureColors` (measure color wins). `calendarColors` gradient/fixed settings activate only when `backgroundStat.enabled` is on.
 
 ---
 
@@ -141,10 +143,13 @@ Each pill `div`:
 
 ### Legend rendering
 
-A `div.bci-calendar-legend` is appended outside the `<table>`. Its position in the DOM and CSS flex layout changes based on `legend.position`:
+`bciCalendar.loadCalendar()` receives the root element (the `<table>` currently). To support legend placement, the function will instead receive the **parent container** of the table (the `div` passed in from `visual.ts`). A new wrapper `div.bci-calendar-container` is created as the first child of that parent and all content (table + legend) is appended inside it. This isolates the change to `bciCalendar.js` and does not affect any existing external CSS selectors that target `.bci-calendar` on the table.
 
-- `top` / `bottom`: horizontal flex row, inserted before or after the table
-- `right`: the table and legend are wrapped in a flex row container, legend as a vertical column
+Layout by `legend.position`:
+
+- `top`: wrapper is `flex-direction: column`; legend div inserted before the table
+- `bottom`: wrapper is `flex-direction: column`; legend div inserted after the table
+- `right` (default): wrapper is `flex-direction: row`; legend div appended after the table as a vertical column
 
 Each legend entry: color swatch (9×9px, border-radius 2px) + measure display name.
 
@@ -179,7 +184,7 @@ When `backgroundStat.enabled` is true, the existing `getColor(dataValue)` functi
 
 | File | Change |
 |---|---|
-| `capabilities.json` | Remove `measure` max constraint; add `measureColors`, `legend`, `backgroundStat` objects |
+| `capabilities.json` | Set `measure` max to `5`; add `measureColors`, `legend`, `backgroundStat` objects |
 | `src/visual.ts` | Update `CalendarDataPoint`, `CalendarSettings`, `visualTransform()`, `enumerateObjectInstances()` |
 | `src/bciCalendar.js` | Update cell rendering loop, add legend rendering, update background color logic |
 | `style/visual.less` | Add `.bci-calendar-pill`, `.bci-calendar-legend` styles |
