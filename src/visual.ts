@@ -583,6 +583,39 @@ module powerbi.extensibility.visual {
                         selector: null
                     });
                     break;
+                case 'measureColors':
+                    objectEnumeration.push({
+                        objectName: objectName,
+                        properties: {
+                            color1: this.calendarSettings.measureColors.color1,
+                            color2: this.calendarSettings.measureColors.color2,
+                            color3: this.calendarSettings.measureColors.color3,
+                            color4: this.calendarSettings.measureColors.color4,
+                            color5: this.calendarSettings.measureColors.color5
+                        },
+                        selector: null
+                    });
+                    break;
+                case 'legend':
+                    objectEnumeration.push({
+                        objectName: objectName,
+                        properties: {
+                            show: this.calendarSettings.legend.show,
+                            position: this.calendarSettings.legend.position
+                        },
+                        selector: null
+                    });
+                    break;
+                case 'backgroundStat':
+                    objectEnumeration.push({
+                        objectName: objectName,
+                        properties: {
+                            enabled: this.calendarSettings.backgroundStat.enabled,
+                            measureIndex: String(this.calendarSettings.backgroundStat.measureIndex)
+                        },
+                        selector: null
+                    });
+                    break;
             };
 
             return objectEnumeration;
@@ -591,7 +624,7 @@ module powerbi.extensibility.visual {
         private static getTooltipData(value: any, cols: any, locale: string, displayUnit: number, precision: number): VisualTooltipDataItem[] {
             var zip = rows => rows[0].map((_, c) => rows.map(row => row[c]));
             var tooltips = [];
-            if (value.data != null && !isNaN(value.data.value)) {
+            if (value.data != null && value.data.measures && value.data.measures.length > 0 && !isNaN(value.data.measures[0].value)) {
                 var tooltipdata = zip([cols, value.data.rowdata]);
                 var date = new Date(value.data.category).toLocaleDateString(locale);
                 tooltipdata.forEach((t) => {
