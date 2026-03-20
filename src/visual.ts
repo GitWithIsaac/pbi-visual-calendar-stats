@@ -57,9 +57,14 @@ module powerbi.extensibility.visual {
         data: CalendarDataPoint
     };
 
-    interface CalendarDataPoint extends SelectableDataPoint { 
+    interface MeasureValue {
         value: number;
         valueText: string;
+        displayName: string;
+    }
+
+    interface CalendarDataPoint extends SelectableDataPoint {
+        measures: MeasureValue[];   // positional, one per bound measure field
         category: string;
         rowdata: any;
         key: string;
@@ -82,6 +87,9 @@ module powerbi.extensibility.visual {
         calendarColors: ColorSettings;
         dataLabels: DataLabelSettings;
         weekNumbers: WeekNumberSettings;
+        measureColors: MeasureColorSettings;
+        legend: LegendSettings;
+        backgroundStat: BackgroundStatSettings;
     };
 
     interface ColorSettings {
@@ -114,6 +122,24 @@ module powerbi.extensibility.visual {
         fontWeight: number;
         textSize: number;
         alignment: string;
+    }
+
+    interface MeasureColorSettings {
+        color1: Fill;
+        color2: Fill;
+        color3: Fill;
+        color4: Fill;
+        color5: Fill;
+    }
+
+    interface LegendSettings {
+        show: boolean;
+        position: string;
+    }
+
+    interface BackgroundStatSettings {
+        enabled: boolean;
+        measureIndex: number;
     }
 
     interface CalendarError {
@@ -194,6 +220,21 @@ module powerbi.extensibility.visual {
                 fontWeight: 100,
                 textSize: 8,
                 alignment: 'center'
+            },
+            measureColors: {
+                color1: { solid: { color: '#2563eb' } },
+                color2: { solid: { color: '#16a34a' } },
+                color3: { solid: { color: '#dc2626' } },
+                color4: { solid: { color: '#9333ea' } },
+                color5: { solid: { color: '#ea580c' } }
+            },
+            legend: {
+                show: true,
+                position: 'right'
+            },
+            backgroundStat: {
+                enabled: false,
+                measureIndex: 0
             }
         };
         let viewModel: CalendarViewModel = {
@@ -271,6 +312,21 @@ module powerbi.extensibility.visual {
                 fontWeight: getValue<number>(objects, 'showWeeks', 'fontWeight', defaultSettings.weekNumbers.fontWeight),
                 textSize: getValue<number>(objects, 'showWeeks', 'textSize', defaultSettings.weekNumbers.textSize),
                 alignment: getValue<string>(objects, 'showWeeks', 'alignment', defaultSettings.weekNumbers.alignment)
+            },
+            measureColors: {
+                color1: getValue<Fill>(objects, 'measureColors', 'color1', defaultSettings.measureColors.color1),
+                color2: getValue<Fill>(objects, 'measureColors', 'color2', defaultSettings.measureColors.color2),
+                color3: getValue<Fill>(objects, 'measureColors', 'color3', defaultSettings.measureColors.color3),
+                color4: getValue<Fill>(objects, 'measureColors', 'color4', defaultSettings.measureColors.color4),
+                color5: getValue<Fill>(objects, 'measureColors', 'color5', defaultSettings.measureColors.color5),
+            },
+            legend: {
+                show: getValue<boolean>(objects, 'legend', 'show', defaultSettings.legend.show),
+                position: getValue<string>(objects, 'legend', 'position', defaultSettings.legend.position)
+            },
+            backgroundStat: {
+                enabled: getValue<boolean>(objects, 'backgroundStat', 'enabled', defaultSettings.backgroundStat.enabled),
+                measureIndex: parseInt(getValue<string>(objects, 'backgroundStat', 'measureIndex', '0')) || 0
             }
         };
 
