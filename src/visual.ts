@@ -326,7 +326,7 @@ module powerbi.extensibility.visual {
             },
             backgroundStat: {
                 enabled: getValue<boolean>(objects, 'backgroundStat', 'enabled', defaultSettings.backgroundStat.enabled),
-                measureIndex: parseInt(getValue<string>(objects, 'backgroundStat', 'measureIndex', '0')) || 0
+                measureIndex: parseInt(getValue<string>(objects, 'backgroundStat', 'measureIndex', '0'), 10) || 0
             }
         };
 
@@ -362,6 +362,7 @@ module powerbi.extensibility.visual {
             if (category.values[i]) {
                 calendarDataPoints.push({
                     category: <string>category.values[i],
+                    measures: [],
                     value: parseFloat(valueFormat.format(dataValue.values[i])),
                     valueText: textFormat.format(dataValue.values[i]),
                     rowdata: tabledata[i],
