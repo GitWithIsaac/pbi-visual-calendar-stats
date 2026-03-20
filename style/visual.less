@@ -26,14 +26,72 @@
     width: 100%;
 }
 
-.bci-calendar-dataLabel {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+/* Deprecated: .bci-calendar-dataLabel replaced by pills */
+
+.bci-calendar-container {
+    display: flex;
     width: 100%;
-    margin: auto;
+    height: 100%;
+}
+
+.bci-calendar-container.legend-top,
+.bci-calendar-container.legend-bottom {
+    flex-direction: column;
+}
+
+.bci-calendar-container.legend-right {
+    flex-direction: row;
+}
+
+.bci-calendar-pill {
+    display: block;
+    border-radius: 2px;
+    padding: 0 2px;
+    margin-bottom: 1px;
+    text-align: center;
+    line-height: 1.3;
+    /* background-color and color set inline by bciCalendar.js */
+}
+
+.bci-calendar-legend {
+    display: flex;
+    flex-shrink: 0;
+    gap: 6px;
+}
+
+.bci-calendar-container.legend-top .bci-calendar-legend,
+.bci-calendar-container.legend-bottom .bci-calendar-legend {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 4px 0;
+    border-top: 1px solid #eee;
+}
+
+.bci-calendar-container.legend-top .bci-calendar-legend {
+    border-top: none;
+    border-bottom: 1px solid #eee;
+}
+
+.bci-calendar-container.legend-right .bci-calendar-legend {
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 8px;
+    border-left: 1px solid #eee;
+}
+
+.bci-calendar-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Segoe UI', helvetica, arial, sans-serif;
+    white-space: nowrap;
+}
+
+.bci-calendar-legend-swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    flex-shrink: 0;
 }
 
 .bci-calendar .week {
