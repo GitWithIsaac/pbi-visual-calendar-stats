@@ -285,6 +285,33 @@
             }
         }
 
+        // Render legend
+        if (settings.legend && settings.legend.show !== false) {
+            var legendPos = settings.legend.position || 'right';
+
+            // If top, legendEl was already created before the table (Task 8).
+            // For bottom and right, create it now.
+            if (legendPos !== 'top') {
+                legendEl = container.append('div').attr('class', 'bci-calendar-legend');
+            }
+
+            viewModel.dataPoints[0].measures.forEach(function(measure, idx) {
+                var color = self.measureColors[idx] || '#999';
+                var item = legendEl.append('div').attr('class', 'bci-calendar-legend-item');
+                item.append('div')
+                    .attr('class', 'bci-calendar-legend-swatch')
+                    .style('background-color', color);
+                item.append('span')
+                    .style({
+                        'font-size': (settings.dataLabels.textSize || 9) + 'px',
+                        // fontColor is an existing field on CalendarSettings from the original codebase.
+                        // Defensive fallback in case it is null/undefined.
+                        'color': (settings.fontColor && settings.fontColor.solid && settings.fontColor.solid.color) || '#333'
+                    })
+                    .text(measure.displayName);
+            });
+        }
+
     }
 
     function noData (calendar, message) {
