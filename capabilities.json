@@ -376,6 +376,51 @@
                     }
                 }
             }
+        },
+        "measureColors": {
+            "displayName": "Measure Colors",
+            "properties": {
+                "color1": { "displayName": "Measure 1 Color", "type": { "fill": { "solid": { "color": true } } } },
+                "color2": { "displayName": "Measure 2 Color", "type": { "fill": { "solid": { "color": true } } } },
+                "color3": { "displayName": "Measure 3 Color", "type": { "fill": { "solid": { "color": true } } } },
+                "color4": { "displayName": "Measure 4 Color", "type": { "fill": { "solid": { "color": true } } } },
+                "color5": { "displayName": "Measure 5 Color", "type": { "fill": { "solid": { "color": true } } } }
+            }
+        },
+        "legend": {
+            "displayName": "Legend",
+            "properties": {
+                "show": { "displayName": "Show Legend", "type": { "bool": true } },
+                "position": {
+                    "displayName": "Position",
+                    "type": {
+                        "enumeration": [
+                            { "value": "top",    "displayName": "Top"    },
+                            { "value": "bottom", "displayName": "Bottom" },
+                            { "value": "right",  "displayName": "Right"  }
+                        ]
+                    }
+                }
+            }
+        },
+        "backgroundStat": {
+            "displayName": "Background Color Stat",
+            "properties": {
+                "enabled": { "displayName": "Enable Background Color", "type": { "bool": true } },
+                "measureIndex": {
+                    "displayName": "Stat",
+                    "type": {
+                        "enumeration": [
+                            { "value": "0", "displayName": "None"      },
+                            { "value": "1", "displayName": "Measure 1" },
+                            { "value": "2", "displayName": "Measure 2" },
+                            { "value": "3", "displayName": "Measure 3" },
+                            { "value": "4", "displayName": "Measure 4" },
+                            { "value": "5", "displayName": "Measure 5" }
+                        ]
+                    }
+                }
+            }
         }
     },
     "dataViewMappings": [
@@ -386,7 +431,7 @@
                         "max": 1
                     },
                     "measure": {
-                        "max": 1
+                        "max": 5
                     }
                 }
             ],
