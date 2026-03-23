@@ -28,13 +28,15 @@
         ]
     };
 
-    bciCalendar.loadCalendar = function (element, viewModel, settings, selectionManager, allowInteractions) {
+    bciCalendar.loadCalendar = function (element, viewModel, settings, selectionManager, allowInteractions, viewportWidth, viewportHeight) {
         self = {
             calendar: element,
             viewModel: viewModel,
             settings: settings,
             selectionManager: selectionManager,
             allowInteractions: allowInteractions,
+            viewportWidth: viewportWidth || 400,
+            viewportHeight: viewportHeight || 300,
             minValue: settings.calendarColors.minValue || d3.min(viewModel.dataPoints.map(function(d) {
                 return d.measures[0] ? d.measures[0].value : NaN;
             })),
@@ -92,6 +94,19 @@
         var month = viewModel.month;
         var year = viewModel.year;
 
+        // --- Auto-scaled font size ---
+        // Derive font size from available cell dimensions so text grows/shrinks with the visual.
+        // measuresCount drives how many lines stack in each cell vertically.
+        var measuresCount = (viewModel.dataPoints.length > 0 && viewModel.dataPoints[0].measures)
+            ? viewModel.dataPoints[0].measures.length : 1;
+        var headerRowCount = settings.monthYearDisplay !== 'none' ? 2 : 1;
+        var linesPerCell = settings.dataLabels.show !== false ? (1 + measuresCount) : 1;
+        var cellH = self.viewportHeight / (weeks.length + headerRowCount);
+        var cellW = self.viewportWidth / colspan;
+        // cellH / (linesPerCell + 0.5): each line (day number + pills) gets equal vertical space
+        // cellW / 6: prevent font from being wider than ~1/6 of the cell width
+        var scaledFontSize = Math.max(7, Math.floor(Math.min(cellH / (linesPerCell + 0.5), cellW / 6)));
+
         // resequence dayNames[] based on settings.weekStartDay
         var dayNames = consts.dayNames.slice(settings.weekStartDay, consts.dayNames.length).concat(consts.dayNames.slice(0, settings.weekStartDay));
 
@@ -122,7 +137,7 @@
                 .style({
                     'text-align': 'center',
                     'color': settings.fontColor.solid.color,
-                    'font-size': settings.textSize + 'px',
+                    'font-size': scaledFontSize + 'px',
                     'font-weight': settings.fontWeight,
                     'text-align': settings.monthAlignment
                 })
@@ -139,7 +154,7 @@
             .style({
                 'text-align': 'center',
                 'color': settings.fontColor.solid.color,
-                'font-size': settings.textSize + 'px',
+                'font-size': scaledFontSize + 'px',
                 'font-weight': settings.fontWeight,
                 'text-align': settings.weekAlignment
             })
@@ -195,9 +210,9 @@
                 .style('font-size', function(d) {
                     let size = '';
                     if (d.day > 0) {
-                        size = settings.textSize + 'px';
+                        size = scaledFontSize + 'px';
                     } else if (!d.day && d.week > 0) {
-                        size = settings.weekNumbers.textSize + 'px';
+                        size = scaledFontSize + 'px';
                     }
                     return size;
                 })
@@ -277,7 +292,7 @@
                         .style({
                             'background-color': bg,
                             'color': fg,
-                            'font-size': settings.dataLabels.textSize + 'px',
+                            'font-size': scaledFontSize + 'px',
                             'font-weight': settings.dataLabels.fontWeight
                         })
                         .text(measure.valueText);
@@ -301,7 +316,7 @@
                     .style('background-color', color);
                 item.append('span')
                     .style({
-                        'font-size': (settings.dataLabels.textSize || 9) + 'px',
+                        'font-size': scaledFontSize + 'px',
                         // fontColor is an existing field on CalendarSettings from the original codebase.
                         // Defensive fallback in case it is null/undefined.
                         'color': (settings.fontColor && settings.fontColor.solid && settings.fontColor.solid.color) || '#333'

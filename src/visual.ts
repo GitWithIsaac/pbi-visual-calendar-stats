@@ -447,12 +447,13 @@ module powerbi.extensibility.visual {
             let height = options.viewport.height - (margins.top + margins.bottom);
 
             this.table.selectAll('*').remove();
-            this.calendar = bciCalendar.loadCalendar(this.table, viewModel, this.calendarSettings, this.selectionManager, this.host.allowInteractions);
+            this.calendar = bciCalendar.loadCalendar(this.table, viewModel, this.calendarSettings, this.selectionManager, this.host.allowInteractions, width, height);
 
-            // Apply explicit pixel height so the table expands to fill the visual.
-            // Width is handled by CSS (width: 100%), but height: 100% on <table> is unreliable
-            // without an explicit height on the container chain, so we set it directly.
-            this.table.select('table.bci-calendar').style('height', height + 'px');
+            // Set minimum table height = viewport height so cells fill the visual when
+            // content is smaller than the available space.  The table can still grow beyond
+            // this (triggering the container's overflow:auto scrollbar) when auto-scaled
+            // text hits its minimum size floor.
+            this.table.select('table.bci-calendar').style('min-height', height + 'px');
 
             if (viewModel.error.hasError) return;
 
