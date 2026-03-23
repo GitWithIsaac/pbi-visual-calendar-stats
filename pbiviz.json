@@ -1,11 +1,11 @@
 {
   "visual": {
-    "name": "bciCalendar",
-    "displayName": "BciCalendar",
-    "guid": "bciCalendarCC0FA2BFE4B54EE1ACCFE383B9B1DE61",
+    "name": "dataCalendar",
+    "displayName": "Data Calendar",
+    "guid": "dataCalendar4F8A2C1BE9D347F0A523E761C0B5D392",
     "visualClassName": "Visual",
-    "version": "1.2.0",
-    "description": "BCI Calendar is a Power BI custom visual that allows you to view your aggregated data in a month view.",
+    "version": "2.0.0",
+    "description": "Data Calendar — multi-stat calendar visual displaying up to 5 measures per day cell.",
     "supportUrl": "https://github.com/mannymerino/bci-calendar/issues",
     "gitHubUrl": "https://github.com/mannymerino/bci-calendar"
   },
