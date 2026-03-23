@@ -448,7 +448,12 @@ module powerbi.extensibility.visual {
 
             this.table.selectAll('*').remove();
             this.calendar = bciCalendar.loadCalendar(this.table, viewModel, this.calendarSettings, this.selectionManager, this.host.allowInteractions);
-            
+
+            // Apply explicit pixel height so the table expands to fill the visual.
+            // Width is handled by CSS (width: 100%), but height: 100% on <table> is unreliable
+            // without an explicit height on the container chain, so we set it directly.
+            this.table.select('table.bci-calendar').style('height', height + 'px');
+
             if (viewModel.error.hasError) return;
 
             let cols = options.dataViews[0].metadata.columns.filter(c => !c.roles['category']).map(c => c);
