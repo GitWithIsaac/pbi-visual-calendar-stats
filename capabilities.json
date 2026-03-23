@@ -123,9 +123,16 @@
                         "numeric": true
                     }
                 },
+                "autoScale": {
+                    "displayName": "Auto-Scale Text",
+                    "description": "Automatically scale text to fit the visual size. Turn off to set font sizes manually.",
+                    "type": {
+                        "bool": true
+                    }
+                },
                 "textSize": {
                     "displayName": "Text Size",
-                    "description": "(in pixels)",
+                    "description": "(in pixels, used when Auto-Scale Text is off)",
                     "type": {
                         "formatting": {
                             "fontSize": true

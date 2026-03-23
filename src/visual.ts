@@ -80,6 +80,7 @@ module powerbi.extensibility.visual {
         borderColor: Fill;
         fontColor: Fill;
         fontWeight: number;
+        autoScale: boolean;
         textSize: number;
         monthAlignment: string;
         weekAlignment: string;
@@ -165,6 +166,7 @@ module powerbi.extensibility.visual {
                 }
             },
             fontWeight: 100,
+            autoScale: true,
             textSize: 10,
             monthAlignment: 'center',
             weekAlignment: 'center',
@@ -279,6 +281,7 @@ module powerbi.extensibility.visual {
             borderColor: getValue<Fill>(objects, 'calendar', 'borderColor', defaultSettings.borderColor),
             fontColor: getValue<Fill>(objects, 'calendar', 'fontColor', defaultSettings.fontColor),
             fontWeight: getValue<number>(objects, 'calendar', 'fontWeight', defaultSettings.fontWeight),
+            autoScale: getValue<boolean>(objects, 'calendar', 'autoScale', defaultSettings.autoScale),
             textSize: getValue<number>(objects, 'calendar', 'textSize', defaultSettings.textSize),
             monthAlignment: getValue<string>(objects, 'calendar', 'monthAlignment', defaultSettings.monthAlignment),
             weekAlignment: getValue<string>(objects, 'calendar', 'weekAlignment', defaultSettings.weekAlignment),
@@ -511,6 +514,7 @@ module powerbi.extensibility.visual {
                             borderColor: this.calendarSettings.borderColor,
                             fontColor: this.calendarSettings.fontColor,
                             fontWeight: this.calendarSettings.fontWeight,
+                            autoScale: this.calendarSettings.autoScale,
                             textSize: this.calendarSettings.textSize,
                             monthAlignment: this.calendarSettings.monthAlignment,
                             weekAlignment: this.calendarSettings.weekAlignment,

@@ -105,7 +105,9 @@
         var cellW = self.viewportWidth / colspan;
         // cellH / (linesPerCell + 0.5): each line (day number + pills) gets equal vertical space
         // cellW / 6: prevent font from being wider than ~1/6 of the cell width
-        var scaledFontSize = Math.max(7, Math.floor(Math.min(cellH / (linesPerCell + 0.5), cellW / 6)));
+        var autoScaledSize = Math.max(7, Math.floor(Math.min(cellH / (linesPerCell + 0.5), cellW / 6)));
+        var scaledFontSize = settings.autoScale !== false ? autoScaledSize : settings.textSize;
+        var pillFontSize   = settings.autoScale !== false ? autoScaledSize : settings.dataLabels.textSize;
 
         // resequence dayNames[] based on settings.weekStartDay
         var dayNames = consts.dayNames.slice(settings.weekStartDay, consts.dayNames.length).concat(consts.dayNames.slice(0, settings.weekStartDay));
@@ -292,7 +294,7 @@
                         .style({
                             'background-color': bg,
                             'color': fg,
-                            'font-size': scaledFontSize + 'px',
+                            'font-size': pillFontSize + 'px',
                             'font-weight': settings.dataLabels.fontWeight
                         })
                         .text(measure.valueText);
@@ -316,7 +318,7 @@
                     .style('background-color', color);
                 item.append('span')
                     .style({
-                        'font-size': scaledFontSize + 'px',
+                        'font-size': pillFontSize + 'px',
                         // fontColor is an existing field on CalendarSettings from the original codebase.
                         // Defensive fallback in case it is null/undefined.
                         'color': (settings.fontColor && settings.fontColor.solid && settings.fontColor.solid.color) || '#333'
